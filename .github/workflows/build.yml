@@ -55,11 +55,32 @@ jobs:
           name: Link-Organizer-Windows
           path: artifacts
 
+      - name: Filter release files
+        run: |
+          # 移除用户不需要的 elevate.exe
+          find artifacts -name "elevate.exe" -delete
+          
+          # 给便携版加上标识（如果有的话）
+          find artifacts -name "Link Organizer*.exe" ! -name "*Setup*" -exec mv {} artifacts/Link-Organizer-Portable.exe \;
+          
+          # 显示最终文件列表
+          echo "=== Release 文件 ==="
+          find artifacts -name "*.exe" | xargs -I {} basename {}
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: artifacts/**/*
           draft: false
           generate_release_notes: true
+          body: |
+            ## 📦 下载说明
+            
+            | 文件 | 类型 | 说明 |
+            |------|------|------|
+            | `Link Organizer Setup *.exe` | 📥 安装版 | 带安装向导，创建桌面快捷方式和开始菜单，支持卸载 |
+            | `Link-Organizer-Portable.exe` | 🚀 便携版 | 无需安装，双击即用，不写入注册表，可放 U 盘随身携带 |
+            
+            > 💡 普通用户推荐下载 **Setup 安装版**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
