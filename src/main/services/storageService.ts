@@ -10,11 +10,14 @@ interface ExportPreferences {
   faviconBgColor: string
   faviconTextColor: string
   siteTitle: string
+  siteDescription: string
   showFavicons: 'icon' | 'initial' | 'none'
   darkModeToggle: boolean
   searchEnabled: boolean
   backToTopButton: boolean
   sidebarNavigation: boolean
+  showDescriptions: boolean
+  showTags: boolean
 }
 
 interface AppStore {
@@ -53,11 +56,14 @@ export function initializeStorage(): Store<AppStore> {
         faviconBgColor: '#5b9bd5',
         faviconTextColor: '#ffffff',
         siteTitle: '我的链接收藏',
+        siteDescription: '',
         showFavicons: 'icon',
         darkModeToggle: true,
         searchEnabled: true,
         backToTopButton: true,
-        sidebarNavigation: true
+        sidebarNavigation: true,
+        showDescriptions: true,
+        showTags: true
       },
       expandedFolderIds: [],
       lastImportType: 'html',
@@ -173,11 +179,14 @@ const defaultExportPrefs: ExportPreferences = {
   faviconBgColor: '#5b9bd5',
   faviconTextColor: '#ffffff',
   siteTitle: '我的链接收藏',
+  siteDescription: '',
   showFavicons: 'icon',
   darkModeToggle: true,
   searchEnabled: true,
   backToTopButton: true,
-  sidebarNavigation: true
+  sidebarNavigation: true,
+  showDescriptions: true,
+  showTags: true
 }
 
 export function getExportPrefs(): ExportPreferences {

@@ -60,6 +60,7 @@ export interface AIResponse {
 export interface ExportConfig {
   outputPath: string
   siteTitle: string
+  siteDescription: string
   accentColor?: string  // 当前主题色（兼容）
   accentColorLight?: string  // 白天主题色
   accentColorDark?: string  // 暗夜主题色
@@ -77,6 +78,8 @@ export interface ExportFeatures {
   sidebarNavigation: boolean
   backToTopButton: boolean
   showFavicons: 'icon' | 'initial' | 'none'
+  showDescriptions: boolean
+  showTags: boolean
 }
 
 // 导出结果

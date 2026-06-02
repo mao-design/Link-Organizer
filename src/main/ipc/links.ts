@@ -105,7 +105,7 @@ export function setupLinksIpc(mainWindow: BrowserWindow) {
   })
 
   // Reorder links
-  ipcMain.handle('links:reorder', async (_event, updates) => {
+  ipcMain.handle('links:reorder', async (_event, updates: { id: string; order: number }[]) => {
     try {
       const links = getLinks()
 

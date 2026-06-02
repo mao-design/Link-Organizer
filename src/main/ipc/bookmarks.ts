@@ -4,7 +4,7 @@ import path from 'path'
 import os from 'os'
 import { parseNetscapeBookmarks } from '../services/bookmarkParser'
 import { parseMd } from '../services/mdParser'
-import type { ImportResult } from '../types'
+import type { ImportResult, Link, Folder } from '../types'
 
 export function setupBookmarksIpc(mainWindow: BrowserWindow) {
   // Parse HTML bookmark file
@@ -219,8 +219,8 @@ interface ChromeBookmarkRoots {
 }
 
 function parseChromeBookmarks(roots: ChromeBookmarkRoots): ImportResult {
-  const links: Array<Record<string, unknown>> = []
-  const folders: Array<Record<string, unknown>> = []
+  const links: Link[] = []
+  const folders: Folder[] = []
   const errors: Array<{ url: string; reason: string }> = []
 
   function traverse(node: ChromeBookmarkNode, parentFolderId: string | null = null) {
@@ -276,8 +276,8 @@ function convertChromeTimestamp(microseconds: string): number {
 
 // Parse Firefox JSON bookmarks structure (from bookmarkbackups)
 function parseFirefoxJson(data: Record<string, unknown>): ImportResult {
-  const links: Array<Record<string, unknown>> = []
-  const folders: Array<Record<string, unknown>> = []
+  const links: Link[] = []
+  const folders: Folder[] = []
   const errors: Array<{ url: string; reason: string }> = []
 
   function traverse(node: Record<string, unknown>, parentFolderId: string | null = null) {
@@ -297,7 +297,7 @@ function parseFirefoxJson(data: Record<string, unknown>): ImportResult {
           order: folders.length,
           createdAt: child.dateAdded ? (child.dateAdded as number) / 1000 : Date.now(),
           updatedAt: Date.now()
-        })
+        } as Folder)
         traverse(child, folderId)
       } else if (childType === 'text/x-moz-place') {
         // It's a bookmark
@@ -311,13 +311,13 @@ function parseFirefoxJson(data: Record<string, unknown>): ImportResult {
           url: uri,
           title: (child.title as string) || uri,
           description: '',
-          favicon: child.iconuri || null,
+          favicon: (child.iconuri as string) || null,
           tags: (child.tags as string) ? (child.tags as string).split(',').map((t: string) => t.trim()) : [],
           folderId: parentFolderId,
           order: links.length,
           createdAt: child.dateAdded ? (child.dateAdded as number) / 1000 : Date.now(),
           updatedAt: Date.now()
-        })
+        } as Link)
       }
     })
   }
@@ -331,8 +331,8 @@ function parseFirefoxJson(data: Record<string, unknown>): ImportResult {
     importedCount: links.length,
     failedCount: errors.length,
     errors,
-    links: links as ImportResult['links'],
-    folders: folders as ImportResult['folders']
+    links,
+    folders
   }
 }
 
@@ -431,8 +431,8 @@ async function parseFirefoxSqlite(
     close: () => void
   }
 
-  const links: Array<Record<string, unknown>> = []
-  const folders: Array<Record<string, unknown>> = []
+  const links: Link[] = []
+  const folders: Folder[] = []
   const errors: Array<{ url: string; reason: string }> = []
 
   // Query bookmarks from moz_bookmarks and moz_places
@@ -495,8 +495,8 @@ async function parseFirefoxSqlite(
     importedCount: links.length,
     failedCount: errors.length,
     errors,
-    links: links as ImportResult['links'],
-    folders: folders as ImportResult['folders']
+    links,
+    folders
   }
 }
 

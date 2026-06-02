@@ -121,8 +121,8 @@ async function callAIWithRetry(
         throw new Error(errorMsg)
       }
 
-      const data = await response.json()
-      let content = data.choices?.[0]?.message?.content as string
+      const data = await response.json() as Record<string, unknown>
+      let content = (data as any).choices?.[0]?.message?.content as string
 
       if (!content || content.trim().length === 0) {
         // 空响应也重试

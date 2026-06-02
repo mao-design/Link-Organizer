@@ -15,6 +15,7 @@ export function setupExportIpc(mainWindow: BrowserWindow) {
         setExportPrefs({
           lastExportPath: config.outputPath,
           siteTitle: config.siteTitle,
+          siteDescription: config.siteDescription || '',
           logoMode: config.logo ? (/^https?:\/\//.test(config.logo) ? 'image' : 'text') : 'none',
           logoValue: config.logo || '',
           faviconMode: config.favicon ? 'image' : (config.faviconText ? 'text' : 'none'),
@@ -25,7 +26,9 @@ export function setupExportIpc(mainWindow: BrowserWindow) {
           darkModeToggle: config.features.darkModeToggle,
           searchEnabled: config.features.searchEnabled,
           backToTopButton: config.features.backToTopButton,
-          sidebarNavigation: config.features.sidebarNavigation
+          sidebarNavigation: config.features.sidebarNavigation,
+          showDescriptions: config.features.showDescriptions,
+          showTags: config.features.showTags
         })
         const choice = await dialog.showMessageBox(mainWindow, {
           type: 'info',

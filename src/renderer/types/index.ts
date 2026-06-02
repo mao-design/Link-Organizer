@@ -61,7 +61,14 @@ interface ElectronAPI {
       faviconBgColor: string
       faviconTextColor: string
       siteTitle: string
+      siteDescription: string
       showFavicons: 'icon' | 'initial' | 'none'
+      darkModeToggle: boolean
+      searchEnabled: boolean
+      backToTopButton: boolean
+      sidebarNavigation: boolean
+      showDescriptions: boolean
+      showTags: boolean
     }>
     savePrefs: (prefs: any) => Promise<void>
   }

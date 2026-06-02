@@ -31,7 +31,7 @@ export async function generateHugoSite(
     // 6. 复制 favicons
     await copyFavicons(outputPath, links)
 
-    const filesGenerated = countGeneratedFiles(outputPath)
+    const filesGenerated = await countGeneratedFiles(outputPath)
 
     return {
       success: true,

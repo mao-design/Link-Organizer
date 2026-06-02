@@ -16,10 +16,13 @@ interface ExportFeatures {
   backToTopButton: boolean
   sidebarNavigation: boolean
   showFavicons: 'icon' | 'initial' | 'none'
+  showDescriptions: boolean
+  showTags: boolean
 }
 
 const ExportModal: React.FC<ExportModalProps> = ({ links, folders, accentColor, accentColorLight, accentColorDark, onClose }) => {
   const [siteTitle, setSiteTitle] = useState('我的链接收藏')
+  const [siteDescription, setSiteDescription] = useState('')
   const [outputPath, setOutputPath] = useState('')
   const [isExporting, setIsExporting] = useState(false)
   const [exportResult, setExportResult] = useState<{ success: boolean; path?: string; error?: string } | null>(null)
@@ -35,7 +38,9 @@ const ExportModal: React.FC<ExportModalProps> = ({ links, folders, accentColor, 
     searchEnabled: true,
     backToTopButton: true,
     sidebarNavigation: true,
-    showFavicons: 'icon'
+    showFavicons: 'icon',
+    showDescriptions: true,
+    showTags: true
   })
 
   // 加载上次的导出偏好
@@ -44,6 +49,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ links, folders, accentColor, 
       if (prefs) {
         if (prefs.lastExportPath) setOutputPath(prefs.lastExportPath)
         if (prefs.siteTitle) setSiteTitle(prefs.siteTitle)
+        if (prefs.siteDescription) setSiteDescription(prefs.siteDescription)
         if (prefs.logoMode) setLogoMode(prefs.logoMode as 'text' | 'image' | 'none')
         if (prefs.logoValue) setLogo(prefs.logoValue)
         if (prefs.faviconMode) setFaviconMode(prefs.faviconMode as 'text' | 'image' | 'none')
@@ -56,7 +62,9 @@ const ExportModal: React.FC<ExportModalProps> = ({ links, folders, accentColor, 
           darkModeToggle: prefs.darkModeToggle ?? true,
           searchEnabled: prefs.searchEnabled ?? true,
           backToTopButton: prefs.backToTopButton ?? true,
-          sidebarNavigation: prefs.sidebarNavigation ?? true
+          sidebarNavigation: prefs.sidebarNavigation ?? true,
+          showDescriptions: prefs.showDescriptions ?? true,
+          showTags: prefs.showTags ?? true
         }))
       }
     }).catch(() => {})
@@ -87,6 +95,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ links, folders, accentColor, 
       const plainConfig = JSON.parse(JSON.stringify({
         outputPath,
         siteTitle,
+        siteDescription,
         accentColor,
         accentColorLight,
         accentColorDark,
@@ -127,6 +136,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ links, folders, accentColor, 
   const handleClose = () => {
     window.electron.export.savePrefs({
       siteTitle,
+      siteDescription,
       logoMode,
       logoValue: logo,
       faviconMode,
@@ -137,7 +147,9 @@ const ExportModal: React.FC<ExportModalProps> = ({ links, folders, accentColor, 
       darkModeToggle: features.darkModeToggle,
       searchEnabled: features.searchEnabled,
       backToTopButton: features.backToTopButton,
-      sidebarNavigation: features.sidebarNavigation
+      sidebarNavigation: features.sidebarNavigation,
+      showDescriptions: features.showDescriptions,
+      showTags: features.showTags
     }).catch(() => {})
     onClose()
   }
@@ -185,6 +197,16 @@ const ExportModal: React.FC<ExportModalProps> = ({ links, folders, accentColor, 
                     value={siteTitle}
                     onChange={(e) => setSiteTitle(e.target.value)}
                     placeholder="我的链接收藏"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="siteDescription">网站描述（可选）</label>
+                  <input
+                    type="text"
+                    id="siteDescription"
+                    value={siteDescription}
+                    onChange={(e) => setSiteDescription(e.target.value)}
+                    placeholder="描述你的链接收藏网站"
                   />
                 </div>
                 <div className="form-group">
@@ -396,6 +418,22 @@ const ExportModal: React.FC<ExportModalProps> = ({ links, folders, accentColor, 
                       onChange={() => toggleFeature('backToTopButton')}
                     />
                     <span>一键置顶按钮</span>
+                  </label>
+                  <label className="toggle-item">
+                    <input
+                      type="checkbox"
+                      checked={features.showDescriptions}
+                      onChange={() => toggleFeature('showDescriptions')}
+                    />
+                    <span>显示链接简介</span>
+                  </label>
+                  <label className="toggle-item">
+                    <input
+                      type="checkbox"
+                      checked={features.showTags}
+                      onChange={() => toggleFeature('showTags')}
+                    />
+                    <span>显示链接标签</span>
                   </label>
                   <label className="toggle-item">
                     <input
