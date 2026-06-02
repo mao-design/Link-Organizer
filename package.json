@@ -58,14 +58,6 @@
     "win": {
       "target": "nsis",
       "icon": "src/renderer/ico/Favicon.png"
-    },
-    "mac": {
-      "target": "dmg",
-      "icon": "src/renderer/ico/Favicon.png"
-    },
-    "linux": {
-      "target": "AppImage",
-      "icon": "src/renderer/ico/Favicon.png"
     }
   }
 }
