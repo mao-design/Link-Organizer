@@ -1,4 +1,4 @@
-<img src="README.assets/Favicon.png" alt="Favicon" style="width: 200px" />
+<img src="README.assets/Favicon.png" align="center" alt="Favicon" style="width: 200px" />
 
 <h1 align="center">Link Organizer</h1>
 
