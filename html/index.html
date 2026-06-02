@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的链接收藏</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Crect%20width%3D'100'%20height%3D'100'%20rx%3D'20'%20fill%3D'%230f3748'%2F%3E%3Ctext%20x%3D'50'%20y%3D'72'%20text-anchor%3D'middle'%20font-size%3D'70'%20font-weight%3D'bold'%20fill%3D'%23ffffff'%20font-family%3D'sans-serif'%3E%E5%9D%80%3C%2Ftext%3E%3C%2Fsvg%3E" />
+<style>
+/* ===== Reset & Base ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root {
+  --bg: #fafafa; --bg-card: #fff; --bg-hover: #f0f0f0;
+  --text: #2c2c2c; --text-secondary: #6b6b6b;
+  --accent: #0f3748; --border: #d0d0d0; --shadow: rgba(0,0,0,0.08);
+  --radius: 10px;
+}
+.dark{--bg:#1a1a1a;--bg-card:#252525;--bg-hover:#303030;--text:#e8e8e8;--text-secondary:#a0a0a0;--accent:#5b9bd5;--border:#404040;--shadow:rgba(0,0,0,0.3)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .2s,color .2s}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+
+/* ===== Layout ===== */
+.app{display:flex;min-height:100vh}
+.sidebar{width:260px;background:var(--bg-card);border-right:2px solid var(--border);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;padding:16px}
+.sidebar-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.sidebar-title-row h2{font-size:16px;font-weight:600;margin:0;padding:0;border:none}
+.sidebar-toggle-btns{display:flex;gap:4px}
+.sidebar-toggle-btn{width:28px;height:28px;border:1px solid var(--border);border-radius:4px;background:var(--bg-card);color:var(--text-secondary);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
+.sidebar-toggle-btn:hover{background:var(--bg-hover);color:var(--text)}
+.main-area{margin-left:260px;flex:1;min-width:0}
+
+/* ===== Header ===== */
+.header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:var(--bg-card);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:50;gap:12px;flex-wrap:wrap}
+.header-title-wrap{display:flex;align-items:center;gap:10px}
+.header-logo{flex-shrink:0}
+.header-logo-img{height:32px;width:auto;border-radius:4px}
+.header-logo-text{font-size:18px;font-weight:700;color:var(--accent);padding:2px 10px;border:2px solid var(--accent);border-radius:6px}
+.header h1{font-size:20px;font-weight:700}
+.header-actions{display:flex;align-items:center;gap:8px}
+.search-input{padding:8px 14px;border:2px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:14px;width:220px;outline:none;transition:border-color .15s}
+.search-input:focus{border-color:var(--accent)}
+.theme-btn{width:36px;height:36px;border:2px solid var(--border);border-radius:var(--radius);background:var(--bg-card);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--text)}
+.theme-btn:hover{border-color:var(--accent);background:var(--bg-hover)}
+
+/* ===== Main Content ===== */
+.main-content{padding:20px;max-width:1200px}
+
+/* ===== Section ===== */
+.link-section{scroll-margin-top:64px}
+.section-title{font-size:18px;font-weight:600;margin:24px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--border);color:var(--text)}
+
+/* ===== Link Row ===== */
+.links-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:2px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.link-row{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:var(--bg-card);transition:background .12s}
+.link-row:hover{background:var(--bg-hover)}
+.link-favicon{flex-shrink:0;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:4px;position:relative;overflow:hidden}
+.link-favicon-img{position:absolute;top:0;left:0;width:24px;height:24px;border-radius:4px;object-fit:contain;opacity:0;transition:opacity .15s}
+.link-favicon-initial{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:var(--accent);border-radius:4px;text-transform:uppercase;flex-shrink:0;transition:opacity .15s}
+.link-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.link-line{display:flex;align-items:center;gap:8px;min-width:0}
+.link-title{font-size:14px;font-weight:500;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-url{font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-desc{font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ===== Navigation ===== */
+.nav-folder{list-style:none}
+.nav-folder-header{display:flex;align-items:center;gap:6px;padding:8px 10px;cursor:pointer;border-radius:6px;font-size:14px;transition:background .15s;user-select:none}
+.nav-folder-header:hover{background:var(--bg-hover)}
+.nav-folder.collapsed .nav-folder-content{display:none}
+.nav-folder.collapsed .nav-arrow{transform:rotate(-90deg)}
+.nav-arrow{display:inline-flex;align-items:center;justify-content:center;font-size:16px;transition:transform .15s;color:var(--text-secondary);width:24px;height:24px;cursor:pointer;border-radius:4px;flex-shrink:0}
+.nav-arrow:hover{background:var(--bg-hover)}
+.nav-arrow--hidden{visibility:hidden;cursor:default}
+.nav-folder-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-count{font-size:11px;color:var(--text-secondary);background:var(--bg-hover);padding:1px 6px;border-radius:10px}
+.nav-folder-content{padding-left:12px}
+.nav-folder-content ul{list-style:none}
+.sidebar ul{list-style:none}
+
+/* ===== Back to Top ===== */
+.back-to-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border:2px solid var(--border);border-radius:50%;background:var(--bg-card);color:var(--text);font-size:20px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:999;transition:all .2s;box-shadow:0 2px 8px var(--shadow)}
+.back-to-top:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.back-to-top.visible{display:flex}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--bg-hover)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+/* ===== No Results ===== */
+.no-results{text-align:center;padding:60px 20px;color:var(--text-secondary)}
+.no-results .icon{font-size:48px;margin-bottom:12px}
+
+/* ===== Responsive ===== */
+@media(max-width:768px){
+  .sidebar{display:none}.main-area{margin-left:0}
+  .header{flex-direction:column;align-items:stretch}
+  .search-input{width:100%}
+}
+</style>
+</head>
+<body class="light">
+<div class="app">
+  
+  <aside class="sidebar">
+    <div class="sidebar-title-row">
+      <h2>文件夹</h2>
+      <div class="sidebar-toggle-btns">
+        <button class="sidebar-toggle-btn" id="toggleAllBtn" onclick="var btn=this;var all=document.querySelectorAll('.nav-folder');if(all.length===0)return;var any=Array.from(all).some(f=>!f.classList.contains('collapsed'));all.forEach(f=>f.classList.toggle('collapsed',any));btn.textContent=any?'⊞':'⊟';btn.title=any?'全部展开':'全部收起'" title="切换展开/收起">⊟</button>
+      </div>
+    </div>
+    <ul>
+      <li class="nav-folder">
+        <div class="nav-folder-header" onclick="document.querySelectorAll('.link-section').forEach(s=>s.style.display='')">
+          <span class="nav-arrow" style="visibility:hidden">▾</span>
+          <span class="nav-folder-name">全部链接</span>
+          <span class="nav-count">7</span>
+        </div>
+      </li>
+      <ul>
+        <li class="nav-folder">
+          <div class="nav-folder-header" data-folder-id="e4f39628-e137-4733-9681-6838338bf754">
+            <span class="nav-arrow nav-arrow--hidden">▾</span>
+            <span class="nav-folder-name">搜索</span>
+            <span class="nav-count">1</span>
+          </div>
+          
+        </li>
+        <li class="nav-folder">
+          <div class="nav-folder-header" data-folder-id="f382eab5-a331-4e3b-93f0-c6be87de724d">
+            <span class="nav-arrow" onclick="event.stopPropagation();this.parentElement.parentElement.classList.toggle('collapsed')">▾</span>
+            <span class="nav-folder-name">视频</span>
+            <span class="nav-count">4</span>
+          </div>
+          <div class="nav-folder-content"><ul>
+        <li class="nav-folder">
+          <div class="nav-folder-header" data-folder-id="75b8c2e5-0dae-4581-a941-1c49171ddb67">
+            <span class="nav-arrow nav-arrow--hidden">▾</span>
+            <span class="nav-folder-name">我是视频的子目录</span>
+            <span class="nav-count">2</span>
+          </div>
+          
+        </li></ul></div>
+        </li>
+        <li class="nav-folder">
+          <div class="nav-folder-header" data-folder-id="d213760f-5c3d-4b4f-aefb-3ff0fa948a35">
+            <span class="nav-arrow nav-arrow--hidden">▾</span>
+            <span class="nav-folder-name">游戏</span>
+            <span class="nav-count">2</span>
+          </div>
+          
+        </li></ul>
+    </ul>
+  </aside>
+
+  <div class="main-area">
+    <header class="header">
+      <div class="header-title-wrap">
+        
+        <h1>我的链接收藏</h1>
+      </div>
+      <div class="header-actions">
+        <input type="text" class="search-input" id="searchInput" placeholder="搜索链接标题..." oninput="handleSearch()" />
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="切换暗夜模式">🌙</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      
+      
+      <section class="link-section" id="folder-e4f39628-e137-4733-9681-6838338bf754">
+        <h3 class="section-title">搜索</h3>
+        
+      <article class="link-row">
+        <div class="link-favicon">
+        <span class="link-favicon-initial">百</span>
+        <img src="https://www.google.com/s2/favicons?domain=www.baidu.com&amp;sz=32" alt="" loading="lazy" decoding="async" onload="if(this.naturalWidth>16&&this.naturalHeight>16){this.style.opacity='1';this.previousElementSibling.style.opacity='0'}else{this.remove()}" onerror="this.remove()" class="link-favicon-img" />
+      </div>
+        <div class="link-body">
+          <div class="link-line">
+            <a href="https://www.baidu.com/" target="_blank" rel="noopener noreferrer" class="link-title">百度一下，你就知道</a>
+          </div>
+          <div class="link-line">
+            <span class="link-url">https://www.baidu.com/</span>
+          </div>
+          <div class="link-line"><span class="link-desc">ceshi</span></div>
+        </div>
+      </article>
+      </section>
+      <section class="link-section" id="folder-f382eab5-a331-4e3b-93f0-c6be87de724d">
+        <h3 class="section-title">视频</h3>
+        
+      <article class="link-row">
+        <div class="link-favicon">
+        <span class="link-favicon-initial">哔</span>
+        <img src="https://www.google.com/s2/favicons?domain=www.bilibili.com&amp;sz=32" alt="" loading="lazy" decoding="async" onload="if(this.naturalWidth>16&&this.naturalHeight>16){this.style.opacity='1';this.previousElementSibling.style.opacity='0'}else{this.remove()}" onerror="this.remove()" class="link-favicon-img" />
+      </div>
+        <div class="link-body">
+          <div class="link-line">
+            <a href="https://www.bilibili.com/" target="_blank" rel="noopener noreferrer" class="link-title">哔哩哔哩 (゜-゜)つロ 干杯~-bilibili</a>
+          </div>
+          <div class="link-line">
+            <span class="link-url">https://www.bilibili.com/</span>
+          </div>
+          <div class="link-line"><span class="link-desc">bilibili干杯！！！！！</span></div>
+        </div>
+      </article>
+      <article class="link-row">
+        <div class="link-favicon">
+        <span class="link-favicon-initial">爱</span>
+        <img src="https://www.google.com/s2/favicons?domain=www.iqiyi.com&amp;sz=32" alt="" loading="lazy" decoding="async" onload="if(this.naturalWidth>16&&this.naturalHeight>16){this.style.opacity='1';this.previousElementSibling.style.opacity='0'}else{this.remove()}" onerror="this.remove()" class="link-favicon-img" />
+      </div>
+        <div class="link-body">
+          <div class="link-line">
+            <a href="https://www.iqiyi.com/" target="_blank" rel="noopener noreferrer" class="link-title">爱奇艺 iQIYI-热门独播剧集在线观看</a>
+          </div>
+          <div class="link-line">
+            <span class="link-url">https://www.iqiyi.com/</span>
+          </div>
+          <div class="link-line"><span class="link-desc">爱奇艺网站介绍</span></div>
+        </div>
+      </article>
+      </section>
+      <section class="link-section" id="folder-75b8c2e5-0dae-4581-a941-1c49171ddb67">
+        <h3 class="section-title">我是视频的子目录</h3>
+        
+      <article class="link-row">
+        <div class="link-favicon">
+        <span class="link-favicon-initial">优</span>
+        <img src="https://www.google.com/s2/favicons?domain=www.youku.com&amp;sz=32" alt="" loading="lazy" decoding="async" onload="if(this.naturalWidth>16&&this.naturalHeight>16){this.style.opacity='1';this.previousElementSibling.style.opacity='0'}else{this.remove()}" onerror="this.remove()" class="link-favicon-img" />
+      </div>
+        <div class="link-body">
+          <div class="link-line">
+            <a href="https://www.youku.com/ku/webhome" target="_blank" rel="noopener noreferrer" class="link-title">优酷 - 为好内容全力以赴</a>
+          </div>
+          <div class="link-line">
+            <span class="link-url">https://www.youku.com/ku/webhome</span>
+          </div>
+          <div class="link-line"><span class="link-desc">优酷</span></div>
+        </div>
+      </article>
+      <article class="link-row">
+        <div class="link-favicon">
+        <span class="link-favicon-initial">首</span>
+        <img src="https://www.google.com/s2/favicons?domain=v.qq.com&amp;sz=32" alt="" loading="lazy" decoding="async" onload="if(this.naturalWidth>16&&this.naturalHeight>16){this.style.opacity='1';this.previousElementSibling.style.opacity='0'}else{this.remove()}" onerror="this.remove()" class="link-favicon-img" />
+      </div>
+        <div class="link-body">
+          <div class="link-line">
+            <a href="https://v.qq.com/" target="_blank" rel="noopener noreferrer" class="link-title">首页 腾讯视频-中国领先的在线视频媒体平台,海量高清视频在线观看</a>
+          </div>
+          <div class="link-line">
+            <span class="link-url">https://v.qq.com/</span>
+          </div>
+          <div class="link-line"><span class="link-desc">腾讯视频介绍</span></div>
+        </div>
+      </article>
+      </section>
+      <section class="link-section" id="folder-d213760f-5c3d-4b4f-aefb-3ff0fa948a35">
+        <h3 class="section-title">游戏</h3>
+        
+      <article class="link-row">
+        <div class="link-favicon">
+        <span class="link-favicon-initial">王</span>
+        <img src="https://www.google.com/s2/favicons?domain=world.qq.com&amp;sz=32" alt="" loading="lazy" decoding="async" onload="if(this.naturalWidth>16&&this.naturalHeight>16){this.style.opacity='1';this.previousElementSibling.style.opacity='0'}else{this.remove()}" onerror="this.remove()" class="link-favicon-img" />
+      </div>
+        <div class="link-body">
+          <div class="link-line">
+            <a href="https://world.qq.com/web202603/index.html" target="_blank" rel="noopener noreferrer" class="link-title">王者荣耀世界官网-王者世界多人冒险游戏-腾讯游戏</a>
+          </div>
+          <div class="link-line">
+            <span class="link-url">https://world.qq.com/web202603/index.html</span>
+          </div>
+          <div class="link-line"><span class="link-desc">王者世界</span></div>
+        </div>
+      </article>
+      <article class="link-row">
+        <div class="link-favicon">
+        <span class="link-favicon-initial">三</span>
+        <img src="https://www.google.com/s2/favicons?domain=df.qq.com&amp;sz=32" alt="" loading="lazy" decoding="async" onload="if(this.naturalWidth>16&&this.naturalHeight>16){this.style.opacity='1';this.previousElementSibling.style.opacity='0'}else{this.remove()}" onerror="this.remove()" class="link-favicon-img" />
+      </div>
+        <div class="link-body">
+          <div class="link-line">
+            <a href="https://df.qq.com/main.shtml" target="_blank" rel="noopener noreferrer" class="link-title">《三角洲行动》全新回声赛季，4月16日正式上线---新一代战术射击品质标杆-腾讯游戏</a>
+          </div>
+          <div class="link-line">
+            <span class="link-url">https://df.qq.com/main.shtml</span>
+          </div>
+          
+        </div>
+      </article>
+      </section>
+      <div class="no-results" id="noResults" style="display:none">
+        <div class="icon">🔍</div>
+        <p>未找到匹配的链接</p>
+      </div>
+    </main>
+  </div>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
+
+<script>
+
+// 暗夜模式
+(function(){
+  const saved = localStorage.getItem('theme');
+  if(saved === 'dark') document.body.className = 'dark';
+  if(saved === 'dark') document.getElementById('themeBtn').textContent = '☀️';
+})();
+function toggleTheme(){
+  const isDark = document.body.className === 'dark';
+  document.body.className = isDark ? 'light' : 'dark';
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+}
+
+
+
+// 回到顶部
+window.addEventListener('scroll', function(){
+  var btn = document.getElementById('backToTop');
+  if(window.scrollY > 300) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+});
+
+
+
+// 搜索
+function handleSearch(){
+  var q = document.getElementById('searchInput').value.toLowerCase().trim();
+  var sections = document.querySelectorAll('.link-section');
+  var rows = document.querySelectorAll('.link-row');
+  var noResults = document.getElementById('noResults');
+  var hasVisible = false;
+  
+  if(!q){
+    // 恢复所有 section 和 row 的显示
+    sections.forEach(function(s){ s.style.display = '' });
+    rows.forEach(function(r){ r.style.display = '' });
+    noResults.style.display = 'none';
+    return;
+  }
+  
+  // 先隐藏所有 section，然后显示匹配的
+  sections.forEach(function(s){ s.style.display = 'none' });
+  
+  rows.forEach(function(row){
+    var title = row.querySelector('.link-title');
+    if(title && title.textContent.toLowerCase().includes(q)){
+      row.style.display = '';
+      hasVisible = true;
+      var section = row.closest('.link-section');
+      if(section) section.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+  
+  noResults.style.display = hasVisible ? 'none' : '';
+}
+
+
+
+// 导航点击跳转（通过 data-folder-id 精确匹配）
+document.querySelectorAll('.nav-folder-header').forEach(function(el){
+  el.addEventListener('click', function(e){
+    var folderId = this.getAttribute('data-folder-id');
+    if(folderId){
+      var section = document.getElementById('folder-' + folderId);
+      if(section){
+        e.stopPropagation();
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
+});
+
+</script>
+</body>
+</html>
