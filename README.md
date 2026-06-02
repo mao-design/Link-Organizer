@@ -1,6 +1,6 @@
-<img src="README.assets/Favicon.png" alt="Favicon" style="zoom: 10%;" />
+<img src="README.assets/Favicon.png" alt="Favicon" style="width: 200px" />
 
-# Link Organizer
+<h1 align="center">Link Organizer</h1>
 
 <p align="center">
   <img src="https://img.shields.io/github/stars/mao-design/link-organizer?style=flat-square" alt="Stars">
